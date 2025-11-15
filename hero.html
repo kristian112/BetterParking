@@ -9,6 +9,23 @@
 <title>Запушиха те?</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+/* Smooth fade-in upward */
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.step-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.step-1 { animation-delay: 0.3s; }
+.step-2 { animation-delay: 0.5s; }
+.step-3 { animation-delay: 0.7s; }
+</style>
+
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -60,7 +77,7 @@
 <section class="bg-blue-600 text-white py-10 md:py-20 relative overflow-hidden">
 <div class="absolute inset-0 bg-blue-700 opacity-20"></div>
 <div class="max-w-4xl mx-auto text-center px-6 relative z-10">
-<h1 class="text-3xl md:text-5xl font-extrabold leading-tight mb-4 md:mb-6">
+<h1 class="text-3xl md:text-5xl font-extrabold leading-tight mb-10 md:mb-6">
 Запушиха те?<br class="hidden md:block"/>Изпрати уведомление за секунди.
 </h1>
 <p class="text-base md:text-xl text-blue-100 mb-6 md:mb-8">
@@ -83,27 +100,26 @@ class="bg-white text-blue-600 font-semibold px-6 py-3 md:px-8 md:py-4 rounded-xl
 
 
 <!-- Step 1 -->
-<div class="flex flex-col items-center">
-<div class="flex items-center gap-2 bg-white border-4 border-gray-300 rounded-xl px-4 md:px-6 py-3 shadow-sm">
-<div class="bg-blue-600 text-white font-bold px-2 py-1 rounded">BG</div>
-<div class="text-gray-900 font-extrabold text-2xl md:text-3xl tracking-wider">1234 AB</div>
+<div class="step-card step-1 flex flex-col items-center">
+    <div class="flex items-center gap-2 bg-white border-4 border-gray-300 rounded-xl px-4 md:px-6 py-3 shadow-sm">
+        <div class="bg-blue-600 text-white font-bold px-2 py-1 rounded">BG</div>
+        <div class="text-gray-900 font-extrabold text-2xl md:text-3xl tracking-wider">1234 AB</div>
+    </div>
+    <p class="font-medium text-gray-700 mt-2 md:mt-3">Въведи регистрационен номер</p>
 </div>
-<p class="font-medium text-gray-700 mt-2 md:mt-3">Въведи регистрационен номер</p>
-</div>
-
 
 <!-- Step 2 -->
-<div class="flex flex-col items-center">
-<div class="text-blue-600 text-4xl md:text-5xl mb-3"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
-<p class="font-medium text-gray-700">Качи снимка<br>(по желание)</p>
+<div class="step-card step-2 flex flex-col items-center">
+    <div class="text-blue-600 text-4xl md:text-5xl mb-3"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+    <p class="font-medium text-gray-700">Качи снимка<br>(по желание)</p>
 </div>
-
 
 <!-- Step 3 -->
-<div class="flex flex-col items-center">
-<div class="text-blue-600 text-4xl md:text-5xl mb-3">📱</div>
-<p class="font-medium text-gray-700">Изпрати съобщение</p>
+<div class="step-card step-3 flex flex-col items-center">
+    <div class="text-blue-600 text-4xl md:text-5xl mb-3">📱</div>
+    <p class="font-medium text-gray-700">Изпрати съобщение</p>
 </div>
+
 
 </div>
 </section>
