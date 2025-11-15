@@ -275,5 +275,63 @@ document.getElementById("get-location").addEventListener("click", () => {
 });
 </script>
 
+<script>
+document.getElementById("imageInput").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+        console.log("No file selected");
+        return;
+    }
+
+    console.log("Selected file:", file);
+
+    const ext = file.name.split('.').pop().toLowerCase();
+
+    // 1) Взимаме signed URL от backend
+    let res;
+    try {
+        res = await fetch(`http://localhost:3000/upload-url?ext=${ext}&type=${file.type}`);
+    } catch (e) {
+        alert("Backend-ът не отговаря! Стартиран ли е?");
+        return;
+    }
+
+    if (!res.ok) {
+        alert("Грешка при взимане на signed URL");
+        return;
+    }
+
+    const { uploadURL, publicUrl } = await res.json();
+    console.log("Upload URL:", uploadURL);
+
+    // 2) Качваме директно в R2
+    const upload = await fetch(uploadURL, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file
+    });
+
+    if (!upload.ok) {
+        alert("Грешка при качване в R2!");
+        console.log(await upload.text());
+        return;
+    }
+
+    // 3) Добавяме hidden input
+    let hidden = document.querySelector('input[name="photoUrl"]');
+    if (!hidden) {
+        hidden = document.createElement("input");
+        hidden.type = "hidden";
+        hidden.name = "photoUrl";
+        document.querySelector("form").appendChild(hidden);
+    }
+
+    hidden.value = publicUrl;
+
+    alert("Снимката е качена успешно!");
+});
+</script>
+
+
 </body>
 </html>

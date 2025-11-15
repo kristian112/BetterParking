@@ -117,7 +117,11 @@ router.post("/api/notify", async (req, res) => {
   }
 
   // Email text
-  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.description}).`;
+  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.description}). `;
+  //https://www.google.com/maps/search/?api=1&query=LAT,LNG
+
+  let mapsLink = `https://www.google.com/maps/search/?api=1&q=${req.body.latitude},${req.body.longitude}`
+  emailText+=mapsLink
   console.log(emailText)
   if(req.body.yourPhone != undefined) 
     emailText += `Телефон за връзка с сигнализиращия: (${req.body.yourPhone})`
