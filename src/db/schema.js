@@ -8,4 +8,15 @@ const Cars = sqliteTable("cars", {
   ownerEmail: text("owner_email").notNull()
 });
 
-module.exports = { Cars };
+const Alerts = sqliteTable("alerts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  plate: text("plate").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  message: text("message").notNull(),
+  lat: text("lat"),       // nullable
+  lng: text("lng"),
+  photo: text("photo")    // path към снимка (кога решите)
+});
+
+module.exports = { Cars, Alerts };
+
