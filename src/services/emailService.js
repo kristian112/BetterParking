@@ -18,7 +18,9 @@ const transporter = nodemailer.createTransport({
  * @param {Array} attachments - attachments (по желание)
  */
 async function sendEmail({ to, subject, text, attachments = [] }) {
+  console.log("sendinbg email method")
   try {
+
     const info = await transporter.sendMail({
       from: process.env.MAIL_USER,
       to: "kristian007g@gmail.com",

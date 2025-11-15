@@ -13,7 +13,7 @@
 <header class="w-full bg-white shadow-md sticky top-0 z-50">
   <div class="max-w-5xl mx-auto flex items-center justify-between py-3 px-4">
 
-    <a href="hero.html" class="flex items-center gap-3">
+    <a href="index.html" class="flex items-center gap-3">
       <img src="logo.png" class="h-9 w-auto" alt="Logo" />
       <span class="font-semibold text-lg tracking-wide text-gray-800">
         ЗАПУШИХА ТЕ?
@@ -21,7 +21,7 @@
     </a>
 
     <nav class="hidden md:flex items-center gap-6 text-gray-700 font-medium">
-      <a href="hero.html" class="hover:text-blue-600 transition">Начало</a>
+      <a href="index.html" class="hover:text-blue-600 transition">Начало</a>
       <a href="submit.html" class="hover:text-blue-600 transition">Изпрати</a>
     </nav>
 
@@ -32,7 +32,7 @@
 
   <div id="mobile-menu"
        class="hidden md:hidden flex flex-col bg-white border-t border-gray-200 shadow-inner px-4 py-3 space-y-2">
-    <a href="hero.html" class="hover:text-blue-600 transition text-gray-700 font-medium">Начало</a>
+    <a href="index.html" class="hover:text-blue-600 transition text-gray-700 font-medium">Начало</a>
     <a href="submit.html" class="hover:text-blue-600 transition text-gray-700 font-medium">Изпрати</a>
   </div>
 </header>
@@ -54,7 +54,7 @@
 </section>
 
 <main class="max-w-3xl mx-auto mt-10 px-4 pb-10">
-<form class="bg-white rounded-2xl shadow-xl p-8 space-y-6">
+<form class="bg-white rounded-2xl shadow-xl p-8 space-y-6" method="post" action="http://localhost:3000/api/notify">
 
 <!-- Hidden fields for sending coordinates -->
 <input type="hidden" id="latitude" name="latitude" />
@@ -71,20 +71,20 @@
 <!-- Other plate -->
 <div class="space-y-1.5">
   <label class="text-sm font-semibold text-gray-700">Регистрационен номер на другия автомобил</label>
-  <input type="text" placeholder="BG 1234 AB"
+  <input type="text" placeholder="BG 1234 AB" name="otherCarID"
          class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
 </div>
 
 <!-- Your plate -->
 <div class="space-y-1.5">
   <label class="text-sm font-semibold text-gray-700">Твоят регистрационен номер</label>
-  <input type="text" placeholder="BG 5678 CD"
+  <input type="text" placeholder="BG 5678 CD" name="yourCarID"
          class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
 </div>
 <!-- Email -->
 <div class="space-y-1.5">
   <label class="text-sm font-semibold text-gray-700">Имейл</label>
-<input type="email" placeholder="example@mail.com" required
+<input type="email" placeholder="example@mail.com" required name="ëmail"
        class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
 
 </div>
@@ -92,7 +92,7 @@
 <!-- Description -->
 <div class="space-y-1.5">
   <label class="text-sm font-semibold text-gray-700">Описание на ситуацията</label>
-  <textarea rows="4" placeholder="Опиши какво се е случило..."
+  <textarea rows="4" placeholder="Опиши какво се е случило..." name="desc"
             class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 resize-y"></textarea>
 </div>
 
@@ -104,7 +104,7 @@
     <i class="fa-solid fa-cloud-arrow-up text-3xl text-blue-600"></i>
     <span class="text-sm font-medium text-gray-700">Натисни или пусни снимка тук</span>
     <span class="text-xs text-gray-500">PNG / JPG до 10MB</span>
-    <input type="file" accept="image/*" class="hidden" />
+    <input type="file" accept="image/*" class="hidden" name="image"/>
   </label>
 </div>
 
@@ -129,14 +129,14 @@
 <!-- Phone opt-in -->
 <div class="space-y-3">
   <label class="flex items-start gap-3 cursor-pointer">
-    <input id="share-phone" type="checkbox"
+    <input id="share-phone" type="checkbox" 
            class="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600" />
     <span class="text-sm text-gray-700">Желая да оставя телефон за контакт</span>
   </label>
 
   <div id="phone-wrapper" class="hidden space-y-1.5">
     <label class="text-sm font-semibold text-gray-700">Телефонен номер</label>
-    <input type="tel" placeholder="+359 88 123 4567"
+    <input type="tel" placeholder="+359 88 123 4567" name="yourPhone"
            class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
   </div>
 </div>

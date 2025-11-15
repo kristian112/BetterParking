@@ -7,6 +7,8 @@ const { sendEmail } = require("./services/emailService");
 
 const router = express.Router();
 
+
+
 // Landing page
 router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
@@ -17,20 +19,28 @@ router.get("/submit", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "submit.html"));
 });
 
+
+
 // Notify API
 router.post("/api/notify", async (req, res) => {
-  const { plate } = req.body;
+  //console.log(req);
+  console.log(req.body)
+  //console.log(req.body.otherCarID)
 
-  const cleaned = plate.trim().toUpperCase();
+  const { otherCarID } = req.body;
+  const cleaned = otherCarID.trim().toUpperCase();
 
-  const car = db.select().from(Cars).where(eq(Cars.plate, cleaned)).get();
-
+  const car = await db.select().from(Cars).where(eq(Cars.plate, cleaned)).get();
+  console.log(car)
   if (!car) {
     return res.status(404).json({ ok: false, message: "Car not found" });
   }
 
   // Email text
-  const emailText = `Вашият автомобил (${cleaned}) пречи.`;
+  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.description}).`;
+  console.log(emailText)
+  if(req.body.yourPhone != undefined) 
+    emailText += `Телефон за връзка с сигнализиращия: (${req.body.yourPhone})`
 
   // изпращаме имейла
   await sendEmail({
