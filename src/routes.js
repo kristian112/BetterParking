@@ -6,6 +6,12 @@ const { eq } = require("drizzle-orm");
 const { sendEmail } = require("./services/emailService");
 const cookieParser = require("cookie-parser");
 const router = express.Router();
+const multer = require("multer");
+const crypto = require("crypto");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const { r2 } = require("./r2");
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const { Alerts } = require("./db/schema");
 
@@ -17,13 +23,14 @@ router.use(express.urlencoded({ extended: true }));
 
 
 router.get("/admin/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "admin_login.html"));
+  res.sendFile(path.join(__dirname, "..", "public", "login.html"));
 });
 
 router.post("/admin/login", express.urlencoded({ extended: true }), (req, res) => {
   const { username, password } = req.body;
-
-  if (username === process.env.ADMIN_USER && password === process.env.ADMIN_PASS) {
+  console.log(username);
+  console.log(password);
+  if (username === process.env.ADMIN_USER && password === process.env.ADMIN_PASSWORD) {
     res.cookie("admin", "1", {
       httpOnly: true,
       sameSite: "strict"
@@ -36,49 +43,37 @@ router.post("/admin/login", express.urlencoded({ extended: true }), (req, res) =
 });
 
 
-router.get("/admin/dashboard", checkAdmin, (req, res) => {
-  const rows = db.select().from(Alerts).all();
+router.get("/admin/dashboard", checkAdmin, async (req, res) => {
+  try {
+        const rows = await db.select().from(alerts).orderBy(alerts.id.desc());
+        res.json({
+            success: true,
+            data: rows
+        });
+    } catch (err) {
+        console.error("Error fetching alerts:", err);
+        res.status(500).json({ success: false, error: "Server error" });
+    }
+});
 
-  let html = `
-  <html>
-  <head>
-    <title>Admin Dashboard</title>
-    <style>
-      table, td, th { border: 1px solid black; padding: 4px; }
-      table { border-collapse: collapse; }
-    </style>
-  </head>
-  <body>
-    <h1>Alerts Dashboard</h1>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Plate</th>
-        <th>Time</th>
-        <th>Message</th>
-        <th>Action</th>
-      </tr>
-  `;
+router.get("/admin/alerts/:id", async (req, res) => {
+    const id = Number(req.params.id);
 
-  rows.forEach(a => {
-    html += `
-      <tr>
-        <td>${a.id}</td>
-        <td>${a.plate}</td>
-        <td>${new Date(a.createdAt).toLocaleString()}</td>
-        <td>${a.message}</td>
-        <td><a href="/admin/delete/${a.id}">Delete</a></td>
-      </tr>
-    `;
-  });
+    try {
+        const results = await db.select().from(alerts).where(eq(alerts.id, id));
 
-  html += `
-    </table>
-  </body>
-  </html>
-  `;
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, error: "Not found" });
+        }
 
-  res.send(html);
+        res.json({
+            success: true,
+            data: results[0]
+        });
+    } catch (err) {
+        console.error("Error fetching single alert:", err);
+        res.status(500).json({ success: false, error: "Server error" });
+    }
 });
 
 
@@ -117,7 +112,7 @@ router.post("/api/notify", async (req, res) => {
   }
 
   // Email text
-  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.description}). `;
+  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.desc}). `;
   //https://www.google.com/maps/search/?api=1&query=LAT,LNG
 
   let mapsLink = `https://www.google.com/maps/search/?api=1&q=${req.body.latitude},${req.body.longitude}`
@@ -148,5 +143,38 @@ router.post("/api/notify", async (req, res) => {
 
   return res.json({ ok: true, message: "Email sent" });
 });
+
+
+router.post("/api/upload-image", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const ext = req.file.originalname.split(".").pop();
+    const fileName = crypto.randomUUID() + "." + ext;
+
+    await r2.send(new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET,
+      Key: fileName,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    }));
+
+    const publicUrl =
+      `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/` +
+      `${process.env.R2_BUCKET}/${fileName}`;
+
+    res.json({
+      success: true,
+      url: publicUrl,
+    });
+
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
+});
+
 
 module.exports = router;

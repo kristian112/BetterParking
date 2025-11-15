@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Куката — Списък със сигнали</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,80 +15,74 @@
       📋 Списък със сигнали
     </h1>
 
-    <div class="bg-white shadow-xl rounded-2xl divide-y border border-gray-200">
-
-      <!-- Example ITEM 1 -->
-      <a href="kukataDetails.html?id=123"
-         class="flex items-center justify-between p-5 hover:bg-gray-50 transition">
-
-        <div class="flex flex-col">
-          <span class="text-lg font-semibold text-gray-900 flex gap-2">
-            🚗 Друг автомобил: <span>BG 1234 AB</span>
-          </span>
-
-          <span class="text-sm text-gray-600">
-            Твоят номер: BG 5678 CD
-          </span>
-
-          <span class="text-xs text-gray-400 mt-1">
-            Получено: 2025-01-12 14:23
-          </span>
-        </div>
-
-        <span class="text-blue-600 font-semibold text-sm">
-          Виж детайли →
-        </span>
-      </a>
-
-      <!-- Example ITEM 2 -->
-      <a href="kukataDetails.html?id=124"
-         class="flex items-center justify-between p-5 hover:bg-gray-50 transition">
-
-        <div class="flex flex-col">
-          <span class="text-lg font-semibold text-gray-900 flex gap-2">
-            🚗 Друг автомобил: <span>CA 9876 TT</span>
-          </span>
-
-          <span class="text-sm text-gray-600">
-            Твоят номер: BG 1111 AA
-          </span>
-
-          <span class="text-xs text-gray-400 mt-1">
-            Получено: 2025-01-11 09:14
-          </span>
-        </div>
-
-        <span class="text-blue-600 font-semibold text-sm">
-          Виж детайли →
-        </span>
-      </a>
-
-      <!-- Example ITEM 3 -->
-      <a href="kukataDetails.html?id=125"
-         class="flex items-center justify-between p-5 hover:bg-gray-50 transition">
-
-        <div class="flex flex-col">
-          <span class="text-lg font-semibold text-gray-900 flex gap-2">
-            🚗 Друг автомобил: <span>PB 5555 TX</span>
-          </span>
-
-          <span class="text-sm text-gray-600">
-            Твоят номер: BH 4321 YY
-          </span>
-
-          <span class="text-xs text-gray-400 mt-1">
-            Получено: 2025-01-10 17:50
-          </span>
-        </div>
-
-        <span class="text-blue-600 font-semibold text-sm">
-          Виж детайли →
-        </span>
-      </a>
-
+    <!-- Контейнер, в който JS ще вкара елементите -->
+    <div id="alerts-container"
+         class="bg-white shadow-xl rounded-2xl divide-y border border-gray-200">
     </div>
 
   </div>
+
+  <script>
+    async function loadAlerts() {
+      const container = document.getElementById("alerts-container");
+
+      try {
+        const res = await fetch("http://localhost:3000/admin/alerts");
+        const json = await res.json();
+
+        if (!json.success || json.data.length === 0) {
+          container.innerHTML = `
+            <p class="p-6 text-center text-gray-500">
+              Няма подадени сигнали.
+            </p>`;
+          return;
+        }
+
+        // Генерираме HTML списък
+        container.innerHTML = ""; 
+
+        json.data.forEach(alert => {
+          const time = new Date(alert.createdAt)
+            .toLocaleString("bg-BG", { hour12: false });
+
+          const itemHTML = `
+            <a href="kukataDetails.html?id=${alert.id}"
+               class="flex items-center justify-between p-5 hover:bg-gray-50 transition">
+
+              <div class="flex flex-col">
+                <span class="text-lg font-semibold text-gray-900 flex gap-2">
+                  🚗 Друг автомобил: <span>${alert.otherCarID}</span>
+                </span>
+
+                <span class="text-sm text-gray-600">
+                  Твоят номер: ${alert.yourCarID}
+                </span>
+
+                <span class="text-xs text-gray-400 mt-1">
+                  Получено: ${time}
+                </span>
+              </div>
+
+              <span class="text-blue-600 font-semibold text-sm">
+                Виж детайли →
+              </span>
+            </a>
+          `;
+
+          container.innerHTML += itemHTML;
+        });
+
+      } catch (err) {
+        container.innerHTML = `
+          <p class="p-6 text-center text-red-500">
+            Грешка при зареждане на данните.
+          </p>`;
+        console.error("Load error:", err);
+      }
+    }
+
+    loadAlerts();
+  </script>
 
 </body>
 </html>
