@@ -108,14 +108,14 @@ router.post("/api/notify", async (req, res) => {
   }
 
   // Email text
-  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.desc}). `;
+  let emailText = `Вашият автомобил (${cleaned}) пречи. Описание: (${req.body.desc}). \n`;
   //https://www.google.com/maps/search/?api=1&query=LAT,LNG
 
-  let mapsLink = `https://www.google.com/maps/search/?api=1&q=${req.body.latitude},${req.body.longitude}`;
+  let mapsLink = `https://www.google.com/maps/search/?api=1&q=${req.body.latitude},${req.body.longitude} \n`;
   emailText += mapsLink;
   console.log(emailText);
   if (req.body.yourPhone != undefined)
-    emailText += `Телефон за връзка с сигнализиращия: (${req.body.yourPhone})`;
+    emailText += `\n Телефон за връзка с сигнализиращия: (${req.body.yourPhone})`;
 
   // изпращаме имейла
   await db
@@ -128,7 +128,7 @@ router.post("/api/notify", async (req, res) => {
       lng: req.body.longitude,
       photo: req.body.photoURL || null,
       yourPhone: req.body.yourPhone || null,
-      еmail: car.ownerEmail,
+      email: car.ownerEmail,
       yourCarId: yourCarIdCleaned,
     })
     .run();

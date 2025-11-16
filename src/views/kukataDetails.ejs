@@ -26,13 +26,13 @@
       <!-- Other car -->
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Регистрационен номер на другия автомобил</label>
-        <p class="text-lg font-semibold text-gray-800"><%= alert.plate %></p>
+        <p class="text-lg font-semibold text-gray-800"><%= alert["email"] %></p>
       </div>
 
       <!-- Your car -->
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Твоят регистрационен номер</label>
-        <p class="text-lg font-semibold text-gray-800"><%= alert.your_car_id %></p>
+        <p class="text-lg font-semibold text-gray-800"><%= alert.yourCarId %></p>
       </div>
 
       <!-- Email -->
@@ -42,10 +42,10 @@
       </div>
 
       <!-- Phone -->
-      <% if (alert.email && alert.email.length > 0) { %>
+      <% if (alert.yourPhone && alert.yourPhone.length > 0) { %>
       <div class="space-y-1">
-        <label class="text-sm text-gray-600">email</label>
-        <p class="text-lg font-semibold text-gray-800"><%= alert.email %></p>
+        <label class="text-sm text-gray-600">yourPhone</label>
+        <p class="text-lg font-semibold text-gray-800"><%= alert.yourPhone %></p>
       </div>
       <% } %>
 
@@ -63,19 +63,6 @@
         <label class="text-sm text-gray-600">Снимка</label>
         <img src="<%= alert.your_photo %>"
              class="rounded-xl border shadow-md max-h-64 object-cover">
-      </div>
-      <% } %>
-
-      <!-- Location -->
-      <% if (alert.lat && alert.lng) { %>
-      <div class="space-y-1">
-        <label class="text-sm text-gray-600">Локация</label>
-
-        <textarea readonly rows="2"
-          class="w-full bg-gray-100 border rounded-xl px-3 py-2 text-sm shadow-sm">
-GPS: <%= alert.latitude %>, <%= alert.longitude %>
-Google Maps: https://maps.google.com/?q=<%= alert.latitude %>,<%= alert.longitude %>
-        </textarea>
       </div>
       <% } %>
 
