@@ -114,6 +114,7 @@ router.post("/api/notify", async (req, res) => {
   let mapsLink = `https://www.google.com/maps/search/?api=1&q=${req.body.latitude},${req.body.longitude} \n`;
   emailText += mapsLink;
   console.log(emailText);
+
   if (req.body.yourPhone != undefined)
     emailText += `\n Телефон за връзка с сигнализиращия: (${req.body.yourPhone})`;
 
@@ -126,7 +127,7 @@ router.post("/api/notify", async (req, res) => {
       message: emailText,
       lat: req.body.latitude,
       lng: req.body.longitude,
-      photo: req.body.photoURL || null,
+      photo: req.body.photoUrl || null,
       yourPhone: req.body.yourPhone || null,
       email: car.ownerEmail,
       yourCarId: yourCarIdCleaned,
