@@ -12,7 +12,7 @@
   <div class="max-w-3xl mx-auto py-10">
 
     <!-- Back button -->
-    <a href="/admin/kukata"
+    <a href="/admin/dashboard"
        class="inline-flex items-center text-blue-600 font-medium mb-6 hover:underline">
       ← Обратно към списъка
     </a>
@@ -21,19 +21,18 @@
 
       <h1 class="text-2xl font-bold text-gray-800">
         Детайли за сигнал 
-        <%alert.id %>
       </h1>
 
       <!-- Other car -->
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Регистрационен номер на другия автомобил</label>
-        <p class="text-lg font-semibold text-gray-800"><%= alert.otherCarID %></p>
+        <p class="text-lg font-semibold text-gray-800"><%= alert.plate %></p>
       </div>
 
       <!-- Your car -->
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Твоят регистрационен номер</label>
-        <p class="text-lg font-semibold text-gray-800"><%= alert.yourCarID %></p>
+        <p class="text-lg font-semibold text-gray-800"><%= alert.your_car_id %></p>
       </div>
 
       <!-- Email -->
@@ -43,10 +42,10 @@
       </div>
 
       <!-- Phone -->
-      <% if (alert.phone && alert.phone.length > 0) { %>
+      <% if (alert.email && alert.email.length > 0) { %>
       <div class="space-y-1">
-        <label class="text-sm text-gray-600">Телефон</label>
-        <p class="text-lg font-semibold text-gray-800"><%= alert.phone %></p>
+        <label class="text-sm text-gray-600">email</label>
+        <p class="text-lg font-semibold text-gray-800"><%= alert.email %></p>
       </div>
       <% } %>
 
@@ -54,7 +53,7 @@
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Описание</label>
         <p class="text-gray-700 leading-relaxed">
-          <%= alert.desc || "Няма описание" %>
+          <%= alert.message || "Няма описание" %>
         </p>
       </div>
 
@@ -62,13 +61,13 @@
       <% if (alert.photoUrl) { %>
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Снимка</label>
-        <img src="<%= alert.photoUrl %>"
+        <img src="<%= alert.your_photo %>"
              class="rounded-xl border shadow-md max-h-64 object-cover">
       </div>
       <% } %>
 
       <!-- Location -->
-      <% if (alert.latitude && alert.longitude) { %>
+      <% if (alert.lat && alert.lng) { %>
       <div class="space-y-1">
         <label class="text-sm text-gray-600">Локация</label>
 
