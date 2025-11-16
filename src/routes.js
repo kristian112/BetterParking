@@ -13,7 +13,7 @@ const { r2 } = require("./r2");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-const { Alerts } = require("./db/schema");
+const { Alerts } = require("./db/schema.js");
 
 const checkAdmin = require("./middleware/checkAdmin");
 require("dotenv").config();
@@ -23,7 +23,7 @@ router.use(express.urlencoded({ extended: true }));
 
 
 router.get("/admin/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "login.html"));
+  res.render("login");
 });
 
 router.post("/admin/login", express.urlencoded({ extended: true }), (req, res) => {
@@ -45,14 +45,13 @@ router.post("/admin/login", express.urlencoded({ extended: true }), (req, res) =
 
 router.get("/admin/dashboard", checkAdmin, async (req, res) => {
   try {
-        const rows = await db.select().from(alerts).orderBy(alerts.id.desc());
-        res.json({
-            success: true,
-            data: rows
-        });
+        const rows = await db.select().from(Alerts).orderBy(Alerts.id);
+        console.log(rows);
+        res.render("kukataList", { alerts: rows });
+
     } catch (err) {
         console.error("Error fetching alerts:", err);
-        res.status(500).json({ success: false, error: "Server error" });
+        res.redirect("/admin/login");
     }
 });
 
@@ -60,16 +59,13 @@ router.get("/admin/alerts/:id", async (req, res) => {
     const id = Number(req.params.id);
 
     try {
-        const results = await db.select().from(alerts).where(eq(alerts.id, id));
+        const results = await db.select().from(Alerts).where(eq(Alerts.id, id));
 
         if (results.length === 0) {
             return res.status(404).json({ success: false, error: "Not found" });
         }
-
-        res.json({
-            success: true,
-            data: results[0]
-        });
+        const alert = results[0]
+        res.render("kukataDetails", { alert });
     } catch (err) {
         console.error("Error fetching single alert:", err);
         res.status(500).json({ success: false, error: "Server error" });
@@ -86,12 +82,12 @@ router.get("/admin/delete/:id", checkAdmin, (req, res) => {
 
 // Landing page
 router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+  res.render("index");
 });
 
 // Submit page
 router.get("/submit", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "submit.html"));
+  res.render("submit");
 });
 
 
@@ -128,8 +124,6 @@ router.post("/api/notify", async (req, res) => {
     text: emailText
   });
 
-  const { Alerts } = require("./db/schema");
-
   await db.insert(Alerts).values({
   plate: cleaned,
   createdAt: new Date(),
@@ -141,7 +135,7 @@ router.post("/api/notify", async (req, res) => {
   // Future: SMS (Twilio/Firebase)
   // await sendSms(car.ownerPhone, smsText);
 
-  return res.json({ ok: true, message: "Email sent" });
+  return res.redirect("/");
 });
 
 
