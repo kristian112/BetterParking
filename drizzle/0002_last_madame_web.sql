@@ -1,0 +1,1 @@
+ALTER TABLE `cars` ADD `owner_phone` text NOT NULL;

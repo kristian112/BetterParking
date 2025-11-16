@@ -8,6 +8,34 @@
       "when": 1763205877938,
       "tag": "0000_light_franklin_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1763210557751,
+      "tag": "0001_free_wasp",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1763210636824,
+      "tag": "0002_last_madame_web",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1763229438048,
+      "tag": "0003_lyrical_the_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1763285233703,
+      "tag": "0004_left_reavers",
+      "breakpoints": true
     }
   ]
 }

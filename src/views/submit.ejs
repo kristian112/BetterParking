@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <title>Докладвай ситуацията</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+<header class="w-full bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-5xl mx-auto flex items-center justify-between py-3 px-4">
+
+    <a href="/" class="flex items-center gap-3">
+      <img src="logo.png" class="h-9 w-auto" alt="Logo" />
+      <span class="font-semibold text-lg tracking-wide text-gray-800">
+        ЗАПУШИХА ТЕ?
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-6 text-gray-700 font-medium">
+      <a href="/" class="hover:text-blue-600 transition">Начало</a>
+      <a href="/submit" class="hover:text-blue-600 transition">Изпрати</a>
+    </nav>
+
+    <button id="menu-btn" class="md:hidden text-3xl text-gray-700">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+
+  <div id="mobile-menu"
+       class="hidden md:hidden flex flex-col bg-white border-t border-gray-200 shadow-inner px-4 py-3 space-y-2">
+    <a href="/" class="hover:text-blue-600 transition text-gray-700 font-medium">Начало</a>
+    <a href="/submit" class="hover:text-blue-600 transition text-gray-700 font-medium">Изпрати</a>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById("menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+
+<section class="bg-blue-600 text-white py-8 relative overflow-hidden">
+  <div class="absolute inset-0 bg-blue-700 opacity-20"></div>
+  <div class="max-w-3xl mx-auto text-center px-6 relative z-10">
+    <h1 class="text-3xl font-extrabold tracking-tight mb-2">Докладвай ситуацията</h1>
+    <p class="text-blue-100 text-base">Въведи детайли, регистрационни номера, описание и качи снимка.</p>
+  </div>
+</section>
+
+<main class="max-w-3xl mx-auto mt-10 px-4 pb-10">
+<form class="bg-white rounded-2xl shadow-xl p-8 space-y-6" method="post" action="http://localhost:3000/api/notify">
+
+<!-- Hidden fields for sending coordinates -->
+<input type="hidden" id="latitude" name="latitude" />
+<input type="hidden" id="longitude" name="longitude" />
+
+<!-- Status text -->
+<div id="location-status" class="text-sm text-gray-600"></div>
+
+<div class="space-y-1">
+  <h2 class="text-2xl font-bold text-gray-800">Детайли за ситуацията</h2>
+  <p class="text-sm text-gray-600">Въведи данните по-долу.</p>
+</div>
+
+<!-- Other plate -->
+<div class="space-y-1.5">
+  <label class="text-sm font-semibold text-gray-700">Регистрационен номер на другия автомобил</label>
+  <input type="text" placeholder="BG 1234 AB" name="otherCarID"
+         class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
+</div>
+
+<!-- Your plate -->
+<div class="space-y-1.5">
+  <label class="text-sm font-semibold text-gray-700">Твоят регистрационен номер</label>
+  <input type="text" placeholder="BG 5678 CD" name="yourCarID"
+         class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
+</div>
+<!-- Email -->
+<div class="space-y-1.5">
+  <label class="text-sm font-semibold text-gray-700">Имейл</label>
+<input type="email" placeholder="example@mail.com" required name="еmail"
+       class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
+
+</div>
+
+<!-- Description -->
+<div class="space-y-1.5">
+  <label class="text-sm font-semibold text-gray-700">Описание на ситуацията</label>
+  <textarea rows="4" placeholder="Опиши какво се е случило..." name="desc"
+            class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600 resize-y"></textarea>
+</div>
+
+<!-- Image upload -->
+<div class="space-y-1.5">
+  <label class="text-sm font-semibold text-gray-700">Качи снимка (по желание)</label>
+
+  <label class="mt-1 flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center cursor-pointer hover:bg-gray-100 transition">
+    <i class="fa-solid fa-cloud-arrow-up text-3xl text-blue-600"></i>
+    <span class="text-sm font-medium text-gray-700">Натисни или пусни снимка тук</span>
+    <span class="text-xs text-gray-500">PNG / JPG до 10MB</span>
+    <input type="file" accept="image/*" class="hidden" name="image" id="imageInput"/>
+  </label>
+</div>
+
+<!-- Location -->
+<div class="space-y-2">
+  <label class="text-sm font-semibold text-gray-700">Локация (по желание)</label>
+
+  <button type="button" id="get-location"
+          class="px-4 py-2 text-sm rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition w-max">
+    Вземи текущото ми местоположение
+  </button>
+
+  <!-- Appears only after location is retrieved -->
+  <div id="location-display" class="hidden mt-2">
+    <label class="text-xs text-gray-600">Текуща локация</label>
+    <textarea id="location-text" readonly
+              class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm bg-gray-100 shadow-sm"
+              rows="2"></textarea>
+  </div>
+</div>
+
+<!-- Phone opt-in -->
+<div class="space-y-3">
+  <label class="flex items-start gap-3 cursor-pointer">
+    <input id="share-phone" type="checkbox" 
+           class="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-600" />
+    <span class="text-sm text-gray-700">Желая да оставя телефон за контакт</span>
+  </label>
+
+  <div id="phone-wrapper" class="hidden space-y-1.5">
+    <label class="text-sm font-semibold text-gray-700">Телефонен номер</label>
+    <input type="tel" placeholder="+359 88 123 4567" name="yourPhone"
+           class="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" />
+  </div>
+</div>
+
+<!-- Buttons -->
+<div class="flex justify-end gap-3 pt-2">
+  <button type="reset"
+          class="px-5 py-2 text-sm rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
+    Изчисти
+  </button>
+  <button type="submit"
+          class="px-6 py-2 text-sm rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
+    Изпрати
+  </button>
+</div>
+
+</form>
+</main>
+
+<!-- Phone toggle -->
+<script>
+document.getElementById("share-phone").addEventListener("change", () => {
+  document.getElementById("phone-wrapper").classList.toggle("hidden");
+});
+</script>
+
+<!-- Form validation -->
+<script>
+document.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const otherPlate = document.querySelector('input[placeholder="BG 1234 AB"]');
+    const yourPlate = document.querySelector('input[placeholder="BG 5678 CD"]');
+    const description = document.querySelector("textarea");
+    const phoneCheckbox = document.getElementById("share-phone");
+    const phoneInput = document.querySelector('input[type="tel"]');
+    const fileInput = document.querySelector('input[type="file"]');
+    const emailInput = document.querySelector('input[type="email"]'); // <-- added
+
+    const plateRegex = /^[A-ZА-Я]{1,2}\s?\d{3,4}\s?[A-ZА-Я]{1,2}$/;
+    const phoneRegex = /^(?:\+359|0)\s?\d{2}\s?\d{3}\s?\d{3,4}$/;
+    const descRegex = /^.{10,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // <-- added
+
+    let errors = [];
+
+    if (!plateRegex.test(otherPlate.value.trim())) {
+        errors.push("Невалиден регистрационен номер на другия автомобил.");
+    }
+    if (!plateRegex.test(yourPlate.value.trim())) {
+        errors.push("Невалиден регистрационен номер (твоят).");
+    }
+    if (!descRegex.test(description.value.trim())) {
+        errors.push("Описанието трябва да е поне 10 символа.");
+    }
+
+    // <-- EMAIL validation added
+if (!emailRegex.test(emailInput.value.trim())) {
+    errors.push("Въведи валиден имейл адрес.");
+}
+
+
+    if (phoneCheckbox.checked && !phoneRegex.test(phoneInput.value.trim())) {
+        errors.push("Въведи валиден телефонен номер.");
+    }
+
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (!["image/jpeg", "image/png"].includes(file.type)) {
+            errors.push("Приеми само PNG или JPG файл.");
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            errors.push("Файлът трябва да бъде под 10MB.");
+        }
+    }
+
+    if (errors.length > 0) {
+        alert(errors.join("\n"));
+        return;
+    }
+
+    alert("Успешно изпратено!");
+    this.submit();
+});
+</script>
+
+
+<!-- Location System -->
+<script>
+document.getElementById("get-location").addEventListener("click", () => {
+    const displayBox = document.getElementById("location-display");
+    const locationText = document.getElementById("location-text");
+    const statusBox = document.getElementById("location-status");
+    const hiddenLat = document.getElementById("latitude");
+    const hiddenLon = document.getElementById("longitude");
+
+    statusBox.textContent = "";
+    statusBox.classList.remove("text-red-600", "text-blue-600", "text-green-600");
+
+    if (!navigator.geolocation) {
+        statusBox.textContent = "Вашият браузър не поддържа локация.";
+        statusBox.classList.add("text-red-600");
+        return;
+    }
+
+    statusBox.textContent = "Получаване на локация...";
+    statusBox.classList.add("text-blue-600");
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const lat = pos.coords.latitude.toFixed(6);
+            const lon = pos.coords.longitude.toFixed(6);
+
+            hiddenLat.value = lat;
+            hiddenLon.value = lon;
+
+            locationText.value = `Текуща локация:\n${lat}, ${lon}`;
+            displayBox.classList.remove("hidden");
+
+            statusBox.textContent = `Локация получена: ${lat}, ${lon}`;
+            statusBox.classList.remove("text-blue-600");
+            statusBox.classList.add("text-green-600");
+        },
+
+        (err) => {
+            let msg = "Грешка при получаване на локацията.";
+            if (err.code === err.PERMISSION_DENIED) msg = "Достъпът до локация е отказан.";
+            if (err.code === err.POSITION_UNAVAILABLE) msg = "Локацията не е налична.";
+            if (err.code === err.TIMEOUT) msg = "Изтече времето за получаване.";
+
+            statusBox.textContent = msg;
+            statusBox.classList.remove("text-blue-600");
+            statusBox.classList.add("text-red-600");
+        }
+    );
+});
+</script>
+
+<script>
+// Вземаме input-а
+const imageInput = document.querySelector('input[name="image"]');
+const form = document.querySelector("form");
+
+imageInput.addEventListener("change", async () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+
+    // Debug за теб
+    console.log("Selected file:", file);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        const res = await fetch("http://localhost:3000/api/upload-image", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+        console.log("Upload response:", data);
+
+        if (!data.success) {
+            alert("Грешка при качване на снимката.");
+            return;
+        }
+
+        // Взимаме public URL от бекенда
+        const imageUrl = data.url;
+
+        // Създаваме hidden input, за да го изпратим към backend заедно с останалите полета
+        let hidden = document.querySelector('input[name="photoUrl"]');
+        if (!hidden) {
+            hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "photoUrl";
+            form.appendChild(hidden);
+        }
+
+        hidden.value = imageUrl;
+
+        alert("Снимката е качена успешно!");
+
+    } catch (err) {
+        console.error("Upload error:", err);
+        alert("Снимката не можа да се качи.");
+    }
+});
+</script>
+
+
+
+</body>
+</html>

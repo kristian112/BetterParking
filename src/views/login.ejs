@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вход</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+
+  <div class="w-full max-w-md bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-10 space-y-8 border border-white">
+    <h1 class="text-3xl font-extrabold text-center text-gray-800">Вход в системата</h1>
+
+    <form class="space-y-6" method="POST" action="/admin/login"">
+
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-700">Потребителско име</label>
+        <input type="text" name="username" placeholder="username"
+               class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" required />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-sm font-semibold text-gray-700">Парола</label>
+        <input type="password" name="password" placeholder="••••••••"
+               class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm shadow-sm focus:ring-2 focus:ring-blue-600" required />
+      </div>
+
+      <button type="submit"
+              class="w-full py-3 bg-blue-600 text-white rounded-full font-semibold shadow hover:bg-blue-700 transition">
+        Вход
+      </button>
+
+    </form>
+  </div>
+
+</body>
+</html>
