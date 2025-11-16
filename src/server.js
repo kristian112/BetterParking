@@ -15,7 +15,8 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 app.use("/", routes);
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"))
+app.set("views", path.join(__dirname, "views"));
+app.use('/static', express.static('static'));
 
 const PORT = process.env.PORT || 3000;
 

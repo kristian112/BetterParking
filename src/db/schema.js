@@ -5,7 +5,7 @@ const Cars = sqliteTable("cars", {
   plate: text("plate").notNull().unique(),
 
   ownerPhone: text("owner_phone").notNull(),
-  ownerEmail: text("owner_email").notNull()
+  ownerEmail: text("owner_email").notNull(),
 });
 
 const Alerts = sqliteTable("alerts", {
@@ -13,10 +13,12 @@ const Alerts = sqliteTable("alerts", {
   plate: text("plate").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   message: text("message").notNull(),
-  lat: text("lat"),       // nullable
+  lat: text("lat"), // nullable
   lng: text("lng"),
-  photo: text("photo")    // path към снимка (кога решите)
+  photo: text("photo"), // path към снимка (кога решите)
+  yourPhone: text("your_phone"),
+  еmail: text("email"),
+  yourCarId: text("your_car_id"),
 });
 
 module.exports = { Cars, Alerts };
-
