@@ -89,11 +89,13 @@
 
       if (!confirm("Сигурен ли си, че искаш да изтриеш този сигнал?")) return;
 
-      const id = alert.id; // взимаме си id-то
-      alert(id)
+      debugger;
+      const pathParts = window.location.pathname.split('/');
+      const id = pathParts[pathParts.length - 1];
+
       try {
         const res = await fetch(`/admin/delete/${id}`, {
-          method: "GET",
+          method: "DELETE",
         });
 
         if (!res.ok) {

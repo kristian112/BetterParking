@@ -76,11 +76,18 @@ router.get("/admin/alerts/:id", async (req, res) => {
   }
 });
 
-router.get("/admin/delete/:id", checkAdmin, (req, res) => {
-  db.delete(Alerts).where(eq(Alerts.id, req.params.id)).run();
-  res.redirect("/admin/dashboard");
-});
+router.delete("/admin/delete/:id", checkAdmin, async (req, res) => {
+  try {
+    const idTodel = req.params.id;
+    await db.delete(Alerts).where(eq(Alerts.id, idTodel)).run();
+    return res.status(204).json({ success: true });
+  } catch (error) {
+    console.error("Error deleting alert:", error);
+    alert("Error deleting alert");
 
+    return res.error(500).json({ success: false, error: "Server error" });
+  }
+});
 // Landing page
 router.get("/", (req, res) => {
   res.render("index");
