@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Детайли за сигнал</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <div class="max-w-3xl mx-auto py-10">
+
+    <!-- Back button -->
+    <a href="/admin/dashboard" class="inline-flex items-center text-blue-600 font-medium mb-6 hover:underline">
+      ← Обратно към списъка
+    </a>
+
+    <div class="bg-white p-8 shadow-xl rounded-2xl space-y-6">
+
+      <h1 class="text-2xl font-bold text-gray-800">
+        Детайли за сигнал
+      </h1>
+
+      <!-- Other car -->
+      <div class="space-y-1">
+        <label class="text-sm text-gray-600">Регистрационен номер на другия автомобил</label>
+        <p class="text-lg font-semibold text-gray-800">
+          <%= alert.plate %>
+        </p>
+      </div>
+
+      <!-- Your car -->
+      <div class="space-y-1">
+        <label class="text-sm text-gray-600">Твоят регистрационен номер</label>
+        <p class="text-lg font-semibold text-gray-800">
+          <%= alert.yourCarId %>
+        </p>
+      </div>
+
+      <!-- Email -->
+      <!-- TODO -->
+
+      <!-- Phone -->
+      <% if (alert.yourPhone && alert.yourPhone.length> 0) { %>
+        <div class="space-y-1">
+          <label class="text-sm text-gray-600">Телефон на създателя</label>
+          <p class="text-lg font-semibold text-gray-800">
+            <%= alert.yourPhone %>
+          </p>
+        </div>
+        <% } %>
+
+          <!-- Description -->
+          <div class="space-y-1">
+            <label class="text-sm text-gray-600">Описание</label>
+            <p class="text-gray-700 leading-relaxed">
+              <%= alert.message || "Няма описание" %>
+            </p>
+          </div>
+
+          <!-- Image -->
+          <% if (alert.photoUrl) { %>
+            <div class="space-y-1">
+              <label class="text-sm text-gray-600">Снимка</label>
+              <img src="<%= alert.your_photo %>" class="rounded-xl border shadow-md max-h-64 object-cover">
+            </div>
+            <% } %>
+
+              <!-- Delete button -->
+              <form id="deleteForm">
+                <button type="submit"
+                  class="mt-4 px-5 py-2 bg-red-600 text-white font-semibold rounded-full shadow hover:bg-red-700 transition">
+                  Изтрий сигнала
+                </button>
+              </form>
+
+              <!-- Timestamp -->
+              <div class="pt-3 text-xs text-gray-500">
+                Получено: <%= new Date(alert.createdAt).toLocaleString("bg-BG") %>
+              </div>
+
+    </div>
+  </div>
+  <script>
+    document.getElementById("deleteForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!confirm("Сигурен ли си, че искаш да изтриеш този сигнал?")) return;
+
+      const id = alert.id; // взимаме си id-то
+      alert(id)
+      try {
+        const res = await fetch(`/admin/delete/${id}`, {
+          method: "GET",
+        });
+
+        if (!res.ok) {
+          alert("Грешка при изтриването.");
+          return;
+        }
+
+        window.location.href = "/admin/dashboard";
+
+      } catch (err) {
+        console.error(err);
+        alert("Грешка при заявката.");
+      }
+    });
+  </script>
+
+</body>
+
+</html>

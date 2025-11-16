@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js",
+    "generate-migration": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +22,7 @@
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.7",
     "drizzle-orm": "^0.44.7",
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",

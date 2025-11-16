@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Куката — Списък със сигнали</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <div class="max-w-4xl mx-auto py-10">
+
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">
+      📋 Списък със сигнали
+    </h1>
+
+    <div class="bg-white shadow-xl rounded-2xl divide-y border border-gray-200">
+
+      <% if (alerts.length === 0) { %>
+        <p class="p-6 text-center text-gray-500">
+          Няма подадени сигнали.
+        </p>
+      <% } %>
+
+      <% alerts.forEach(alert => { %>
+        <a href="/admin/alerts/<%= alert.id %>"
+           class="flex items-center justify-between p-5 hover:bg-gray-50 transition">
+
+          <div class="flex flex-col">
+
+            <span class="text-lg font-semibold text-gray-900 flex gap-2">
+              🚗 Докладван автомобил: <span><%= alert.plate %></span>
+            </span>
+
+
+
+            <span class="text-xs text-gray-400 mt-1">
+              Получено: <%= new Date(alert.createdAt).toLocaleString("bg-BG") %>
+            </span>
+
+          </div>
+
+          <span class="text-blue-600 font-semibold text-sm">
+            Виж детайли →
+          </span>
+
+        </a>
+      <% }) %>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
